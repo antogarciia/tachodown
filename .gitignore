@@ -1,0 +1,28 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+
+# Entorno virtual
+.venv/
+
+# Variables de entorno
+.env
+.env.*
+
+# Visual Studio Code
+.vscode/
+
+# Logs
+*.log
+
+# Archivos temporales
+tmp/
+temp/
+
+# Datos generados por simulación
+test_data/generated/
+
+# Sistema operativo
+Thumbs.db
+.DS_Store
