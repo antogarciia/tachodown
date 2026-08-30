@@ -65,6 +65,19 @@ class DeviceController:
 
     def __init__(self):
         self.state = DeviceState.IDLE
+        self.card = None
+
+    def detect_card(self, card):
+        """Registra una tarjeta detectada por el lector."""
+
+        if self.state != DeviceState.IDLE:
+            raise InvalidTransition(
+                f"No se puede detectar una tarjeta desde "
+                f"{self.state.value}"
+            )
+
+        self.card = card
+        self.transition_to(DeviceState.CARD_DETECTED)
 
     def transition_to(self, new_state):
 
