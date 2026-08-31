@@ -75,3 +75,33 @@ def test_tachograph_disconnect_clears_session():
 
     assert tachograph.connected is False
     assert tachograph.authenticated is False
+    
+    
+def test_tachograph_has_identity():
+    tachograph = SimulatedTachograph(
+        tachograph_id="TACHO-123",
+        vehicle_id="VEHICLE-456",
+        vehicle_registration="9999-XYZ",
+    )
+
+    assert tachograph.tachograph_id == "TACHO-123"
+    assert tachograph.vehicle_id == "VEHICLE-456"
+    assert tachograph.vehicle_registration == "9999-XYZ"
+    
+    
+def test_tachograph_identity_is_available_after_download():
+    tachograph = SimulatedTachograph(
+        tachograph_id="TACHO-123",
+        vehicle_id="VEHICLE-456",
+        vehicle_registration="9999-XYZ",
+    )
+
+    tachograph.connect()
+    tachograph.authenticate()
+
+    data = tachograph.download()
+
+    assert data == b"SIMULATED_TACHOGRAPH_DATA"
+    assert tachograph.tachograph_id == "TACHO-123"
+    assert tachograph.vehicle_id == "VEHICLE-456"
+    assert tachograph.vehicle_registration == "9999-XYZ"
