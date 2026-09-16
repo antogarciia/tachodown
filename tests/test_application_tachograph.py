@@ -104,7 +104,7 @@ def test_application_tachograph_download_records_operation(
         == OperationType.TACHOGRAPH_DOWNLOAD.value
     ]
 
-    assert len(tachograph_operations) == 2
+    assert len(tachograph_operations) == 1
 
     assert any(
         item["operation_id"] == operation.operation_id

@@ -1,7 +1,8 @@
 from simulator.card.driver_card import DriverCard
+from simulator.interfaces.card_reader import CardReaderInterface
 
 
-class CardReader:
+class CardReader(CardReaderInterface):
     """Lector de tarjetas simulado."""
 
     def __init__(self):
@@ -23,7 +24,7 @@ class CardReader:
         self._card = card
 
     def remove_card(self) -> None:
-        """Simula la retirada de la tarjeta."""
+        """Simula la retirada de una tarjeta."""
 
         self._card = None
 

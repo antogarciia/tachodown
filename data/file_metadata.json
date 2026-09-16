@@ -1,0 +1,29 @@
+[
+  {
+    "file_id": "FILE-dfb1a6e10f5b428396d381010af7af2e",
+    "filename": "CARD-001_20260915155016_d8685d.DDD",
+    "source_type": "DRIVER_CARD",
+    "created_at": "2026-09-15T15:50:16.309013+00:00",
+    "size_bytes": 26,
+    "sha256": "14564aeccf2cf89591b75889583d64339fb27c5dd8a9bed6263fe475353245e7",
+    "storage_path": "C:\\tachodown\\data\\CARD-001_20260915155016_d8685d.DDD"
+  },
+  {
+    "file_id": "FILE-1e09b0b182b945229e847133289b7b92",
+    "filename": "TACHOGRAPH_20260915155132_244bb8.DDD",
+    "source_type": "TACHOGRAPH",
+    "created_at": "2026-09-15T15:51:32.802202+00:00",
+    "size_bytes": 25,
+    "sha256": "c3ff47cfcecfae05cb411b5e612314a6c81808f02a407a2869c63af90e507c64",
+    "storage_path": "C:\\tachodown\\data\\TACHOGRAPH_20260915155132_244bb8.DDD"
+  },
+  {
+    "file_id": "FILE-7008ee0314354451afd5c5c504ac705e",
+    "filename": "OFFLINE-001_20260915155425_f4563b.DDD",
+    "source_type": "DRIVER_CARD",
+    "created_at": "2026-09-15T15:54:25.065065+00:00",
+    "size_bytes": 26,
+    "sha256": "14564aeccf2cf89591b75889583d64339fb27c5dd8a9bed6263fe475353245e7",
+    "storage_path": "C:\\tachodown\\data\\OFFLINE-001_20260915155425_f4563b.DDD"
+  }
+]

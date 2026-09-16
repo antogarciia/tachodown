@@ -88,3 +88,46 @@ def test_storage_rejects_absolute_path(tmp_path):
         raise AssertionError(
             "Se ha permitido una ruta absoluta"
         )
+
+
+def test_storage_persists_file_metadata(tmp_path):
+    storage = LocalStorage(tmp_path)
+
+    metadata = storage.save(
+        data=b"ORIGINAL_DDD_DATA",
+        filename="CARD_001_20260830.DDD",
+        source_type=SourceType.DRIVER_CARD,
+    )
+
+    second_storage = LocalStorage(tmp_path)
+
+    restored = second_storage.get_metadata(
+        metadata.file_id
+    )
+
+    assert restored is not None
+    assert restored.file_id == metadata.file_id
+    assert restored.filename == metadata.filename
+    assert restored.size_bytes == metadata.size_bytes
+    assert restored.sha256 == metadata.sha256
+
+
+def test_storage_persists_original_hash_after_file_is_modified(tmp_path):
+    storage = LocalStorage(tmp_path)
+
+    metadata = storage.save(
+        data=b"ORIGINAL_DDD_DATA",
+        filename="CARD_001_20260830.DDD",
+        source_type=SourceType.DRIVER_CARD,
+    )
+
+    path = tmp_path / metadata.filename
+    path.write_bytes(b"MODIFIED_DDD_DATA")
+
+    restored = storage.get_metadata(
+        metadata.file_id
+    )
+
+    assert restored is not None
+    assert restored.sha256 == metadata.sha256
+    assert restored.sha256 != "MODIFIED_DDD_DATA"

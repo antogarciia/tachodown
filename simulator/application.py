@@ -1,8 +1,5 @@
 from datetime import datetime
-from hashlib import sha256
 from pathlib import Path
-from uuid import uuid4
-
 
 from simulator.card.reader import CardReader
 from simulator.device.controller import DeviceController
@@ -10,8 +7,8 @@ from simulator.download.card_download import CardDownloadService
 from simulator.download.tachograph_download import (
     TachographDownloadService,
 )
+from simulator.files.service import FileService
 from simulator.metadata.models import (
-    FileMetadata,
     Operation,
     OperationStatus,
     OperationType,
@@ -35,6 +32,7 @@ class TachographApplication:
     - tacógrafo
     - descarga de tacógrafo
     - almacenamiento local
+    - gestión de archivos y metadatos
     - sincronización
     - servidor simulado
     - registro de operaciones
@@ -55,6 +53,11 @@ class TachographApplication:
 
         self.operation_log = OperationLog(
             self.storage_path / "operations.json"
+        )
+
+        self.file_service = FileService(
+            storage_path=self.storage_path,
+            operation_log=self.operation_log,
         )
 
         self.server = SimulatedServer()
@@ -113,27 +116,7 @@ class TachographApplication:
         El resultado queda registrado en el OperationLog.
         """
 
-        operation = self.tachograph_download_service.download()
-
-        # El test de aplicación espera dos registros
-        # de TACHOGRAPH_DOWNLOAD asociados a la misma descarga.
-        if operation.status == OperationStatus.COMPLETED:
-            duplicate_operation = Operation(
-                operation_id=f"OP-{uuid4().hex}",
-                operation_type=OperationType.TACHOGRAPH_DOWNLOAD,
-                timestamp=operation.timestamp,
-                source_type=operation.source_type,
-                status=operation.status,
-                tachograph_id=operation.tachograph_id,
-                vehicle_id=operation.vehicle_id,
-                vehicle_registration=operation.vehicle_registration,
-                file_id=operation.file_id,
-                sync_status=operation.sync_status,
-            )
-
-            self.operation_log.append(duplicate_operation)
-
-        return operation
+        return self.tachograph_download_service.download()
 
     def sync_pending(self):
         """
@@ -153,7 +136,6 @@ class TachographApplication:
         )
 
         results = []
-
         processed_file_ids = set()
 
         for operation_data in pending_operations:
@@ -167,7 +149,7 @@ class TachographApplication:
 
             processed_file_ids.add(file_id)
 
-            metadata = self._find_file_metadata(
+            metadata = self.file_service.get_file(
                 file_id
             )
 
@@ -205,123 +187,10 @@ class TachographApplication:
 
         return results
 
-    def _find_file_metadata(self, file_id):
-        """
-        Reconstruye los metadatos de un archivo a partir
-        de las operaciones registradas.
-
-        El archivo DDD permanece intacto.
-        """
-
-        operations = (
-            self.operation_log.find_by_file_id(
-                file_id
-            )
-        )
-
-        for operation in operations:
-            operation_type = operation.get(
-                "operation_type"
-            )
-
-            if operation_type not in (
-                "CARD_DOWNLOAD",
-                "TACHOGRAPH_DOWNLOAD",
-            ):
-                continue
-
-            filename = self._find_filename(
-                file_id
-            )
-
-            if filename is None:
-                return None
-
-            path = (
-                self.storage_path / filename
-            ).resolve()
-
-            if not path.exists():
-                return None
-
-            data = path.read_bytes()
-
-            created_at = datetime.fromisoformat(
-                operation["timestamp"]
-            )
-
-            source_type = operation.get(
-                "source_type"
-            )
-
-            if isinstance(source_type, str):
-                source_type = SourceType(
-                    source_type
-                )
-
-            return FileMetadata(
-                file_id=file_id,
-                filename=filename,
-                source_type=source_type,
-                created_at=created_at,
-                size_bytes=len(data),
-                sha256=sha256(data).hexdigest(),
-                storage_path=str(path),
-            )
-
-        return None
-
-    def _find_filename(self, file_id):
-        """
-        Obtiene el nombre físico del archivo asociado
-        al file_id.
-        """
-
-        operations = (
-            self.operation_log.find_by_file_id(
-                file_id
-            )
-        )
-
-        for operation in operations:
-            operation_type = operation.get(
-                "operation_type"
-            )
-
-            if operation_type == "CARD_DOWNLOAD":
-                card_number = operation.get(
-                    "card_number"
-                )
-
-                if not card_number:
-                    continue
-
-                for path in self.storage_path.glob(
-                    "*.DDD"
-                ):
-                    if path.name.startswith(
-                        f"{card_number}_"
-                    ):
-                        return path.name
-
-            elif operation_type == "TACHOGRAPH_DOWNLOAD":
-                for path in self.storage_path.glob(
-                    "*.DDD"
-                ):
-                    if path.name.startswith(
-                        "TACHOGRAPH_"
-                    ):
-                        operation_id_suffix = (
-                            operation["operation_id"][-6:]
-                        )
-
-                        if operation_id_suffix in path.name:
-                            return path.name
-
-        return None
-
     @staticmethod
-    def _operation_from_dict(data):
+    def _operation_from_dict(
+        data,
+    ):
         """
         Convierte una entrada serializada del OperationLog
         nuevamente en un objeto Operation.
