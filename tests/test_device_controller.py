@@ -1,4 +1,4 @@
-﻿from simulator.device.controller import (
+from simulator.device.controller import (
     DeviceController,
     DeviceState,
     InvalidTransition,

@@ -26,3 +26,20 @@ test_data/generated/
 # Sistema operativo
 Thumbs.db
 .DS_Store
+# Local configuration and generated files
+.env
+.env.*
+!.env.example
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+*.sqlite3
+*.db
+media/
+data/
+build/
+dist/
+target/
+*.log
+config/clinica.properties

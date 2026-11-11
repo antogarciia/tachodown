@@ -1,74 +1,52 @@
-\# TACHO-DOWN
-
-
+# TACHO-DOWN
 
 Sistema autónomo para descarga, almacenamiento y sincronización de datos de tacógrafo y tarjetas de conductor.
 
-
-
-\## Objetivo
-
-
+## Objetivo
 
 Desarrollar un dispositivo portátil capaz de:
 
+- Leer tarjetas de conductor.
 
+- Descargar datos del tacógrafo.
 
-\- Leer tarjetas de conductor.
+- Conservar los archivos originales.
 
-\- Descargar datos del tacógrafo.
+- Almacenar los datos localmente.
 
-\- Conservar los archivos originales.
+- Funcionar sin conexión.
 
-\- Almacenar los datos localmente.
+- Sincronizar automáticamente cuando vuelva la conexión.
 
-\- Funcionar sin conexión.
+- Utilizar conexión móvil 4G.
 
-\- Sincronizar automáticamente cuando vuelva la conexión.
+- Mantener la integridad de los archivos descargados.
 
-\- Utilizar conexión móvil 4G.
+## Arquitectura prevista
 
-\- Mantener la integridad de los archivos descargados.
+- Compute Module 5
 
+- VU-BOARD propia
 
+- Interfaz de conexión al tacógrafo
 
-\## Arquitectura prevista
+- Lector de tarjetas
 
+- Almacenamiento local
 
+- Módem LTE
 
-\- Compute Module 5
+- Servidor
 
-\- VU-BOARD propia
+- Panel de gestión
 
-\- Interfaz de conexión al tacógrafo
-
-\- Lector de tarjetas
-
-\- Almacenamiento local
-
-\- Módem LTE
-
-\- Servidor
-
-\- Panel de gestión
-
-
-
-\## Seguridad
-
-
+## Seguridad
 
 El sistema deberá respetar los protocolos y mecanismos de seguridad aplicables a las tarjetas y tacógrafos soportados.
 
-
-
 Los archivos descargados se conservarán en su formato original.
 
-
-
-\## Estado
-
-
+## Estado
 
 Fase de simulación.
 
